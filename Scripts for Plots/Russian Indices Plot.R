@@ -3,7 +3,7 @@ lapply(c("moexer", "timeSeries", "xts"), require, character.only = T) # Libs
 line.plt.marketcap.rus <- function(data=T, s=NULL, e=NULL){
     
   x <- c(
-    "MOEX", "MOEX10", "MOEXBC", "MCXSM"
+    "IMOEX", "MOEX10", "MOEXBC", "MCXSM"
   )
     
   y <- c(
