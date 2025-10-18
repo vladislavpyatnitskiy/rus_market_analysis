@@ -7,3 +7,6 @@ Fig. 1. Dynamics of Russian Sectors
 
 ![](https://github.com/vladislavpyatnitskiy/rus_market_analysis/blob/main/Plots/Heatmap%20of%20Russian%20Sectors.png?raw=true)
 Fig. 2. Heatmap of Correlation Values for Russain Sectors
+
+![](https://github.com/vladislavpyatnitskiy/rus_market_analysis/blob/main/Plots/Russian%20Indices.png?raw=true)
+Fig. 3. Russian Indices by Market Cap
