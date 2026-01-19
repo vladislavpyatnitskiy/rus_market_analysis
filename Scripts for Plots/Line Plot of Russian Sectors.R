@@ -14,16 +14,16 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
     x <- c(
       "MOEXTL", "MOEXCN", "MOEXOG", "MOEXFN", "MOEXTN", "MOEXIT", "MOEXCH",
       "MOEXEU", "MOEXMM", "MOEXRE"
-      )
+    )
     
     y <- c(
       "Communications", "Consumer", "Energy", "Financials",  "Industrials",
       "IT", "Chemicals", "Utilities", "Metals & Mining", "Real Estate"
-      )
+    )
   }
   
   if (data){ R <- NULL # data off
-  
+    
     getData2 <- function(A, s, e) { 
       if (is.null(s) && is.null(e))
         return(get_candles(A, from = "2007-07-20", interval = 'daily')) 
@@ -33,10 +33,17 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
     }
     for (A in x){ D <- as.data.frame(getData2(A, s, e)[,c(3,8)])
       
+      message(
+        sprintf(
+          "%s is downloaded (%s / %s)", 
+          A, which(x == A), length(x)
+        )
+      ) # Download message
+      
       D <- D[!duplicated(D),] # Remove duplicates
       
       R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } }
-  
+      
   R <- R[apply(R, 1, function(x) all(!is.na(x))),] # Get rid of NA
   
   colnames(R) <- y
@@ -46,6 +53,9 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
   
   par(mar = c(8, 2.5, 4, 2.5)) # Define borders of the plot
   
+  C = c("#466791","#60bf37","#953ada","yellow","blue","#a7b43d","black",
+        "green","turquoise","red")
+  
   plot(
     DF[,1],
     ylim = c(min(DF), max(DF)),
@@ -53,6 +63,7 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
     type = "l",
     lwd = 2,
     las = 1,
+    col = C[1],
     xlab = "Trading Days",
     ylab = "Returns (%)",
     main = "Performance of Russian Sectors"
@@ -64,16 +75,16 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
   
   abline(h = 0) # Add black horizontal line at break even point
   
-  for (n in 2:(ncol(DF))){ lines(DF[,n], col = n, lwd = 2) } # Plot indices
+  for (n in 2:(ncol(DF))){ lines(DF[,n], col = C[n], lwd = 2) } # Plot indices
   
   legend(
     x = "bottom",
-    inset = c(0, -.27),
+    inset = c(0, -.2),
     legend = colnames(DF),
     xpd = T,
-    col = seq(ncol(DF)),
-    lwd = 2,
-    cex = .5,
+    col = C[-1],
+    lwd = 3,
+    cex = .75,
     bty = "n",
     horiz = F,
     ncol = 6
