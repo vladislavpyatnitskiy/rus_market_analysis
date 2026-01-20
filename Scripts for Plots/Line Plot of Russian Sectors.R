@@ -2,25 +2,19 @@ lapply(c("moexer", "xts", "timeSeries"), require, character.only = T) # Libs
 
 line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
   
-  if (start){
-    
-    x <- c("MOEXTL", "MOEXOG", "MOEXFN", "MOEXEU")
-    
-    y <- c("Communications", "Energy", "Financials", "Utilities")
-  }
+  x <- c(
+    "MOEXTL", "MOEXOG", "MOEXFN", "MOEXEU", "MOEXTN", "MOEXIT", "MOEXCH",
+    "MOEXMM", "MOEXRE", "MOEXCN"
+  )
   
-  else {
+  y <- c(
+    "Communications", "Energy", "Financials", "Utilities",  "Industrials",
+    "IT", "Chemicals", "Metals & Mining", "Real Estate", "Consumer"
+  )
+  
+  if (start){ x <- x[1:4]
     
-    x <- c(
-      "MOEXTL", "MOEXCN", "MOEXOG", "MOEXFN", "MOEXTN", "MOEXIT", "MOEXCH",
-      "MOEXEU", "MOEXMM", "MOEXRE"
-    )
-    
-    y <- c(
-      "Communications", "Consumer", "Energy", "Financials",  "Industrials",
-      "IT", "Chemicals", "Utilities", "Metals & Mining", "Real Estate"
-    )
-  }
+    y <- y[1:4] }
   
   if (data){ R <- NULL # data off
     
@@ -53,7 +47,7 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
   
   par(mar = c(8, 2.5, 4, 2.5)) # Define borders of the plot
   
-  C = c("#466791","#60bf37","#953ada","yellow","blue","#a7b43d","black",
+  C = c("pink","#60bf37","#953ada","yellow","blue","#a7b43d","black",
         "green","turquoise","red")
   
   plot(
@@ -82,7 +76,7 @@ line.plt.sector.rus <- function(data=T, s=NULL, e=NULL, start=F){
     inset = c(0, -.2),
     legend = colnames(DF),
     xpd = T,
-    col = C[-1],
+    col = C,
     lwd = 3,
     cex = .75,
     bty = "n",
