@@ -22,11 +22,18 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2){
       return(get_candles(A, from = s, till = e, interval = 'daily')) 
     }
     for (A in x){ D <- as.data.frame(getData2(A, s, e)[,c(3,8)])
+                 
+      message(
+        sprintf(
+          "%s is downloaded (%s / %s)", 
+          A, which(x == A), length(x)
+        )
+      ) # Download message
+      
+      D <- D[!duplicated(D),] # Remove duplicates
+      
+      R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } }
     
-    D <- D[!duplicated(D),] # Remove duplicates
-    
-    R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } }
-  
   R <- R[apply(R, 1, function(x) all(!is.na(x))),] # Get rid of NA
   
   colnames(R) <- y
