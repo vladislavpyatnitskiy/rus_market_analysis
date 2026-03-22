@@ -1,6 +1,6 @@
 lapply(c("moexer", "timeSeries", "xts"), require, character.only = T) # Libs
 
-line.plt.marketcap.rus <- function(data=T, s=NULL, e=NULL){
+line.plt.marketcap.rus <- function(s=NULL, e=NULL){
   
   x <- c(
     "IMOEX", "MOEX10", "MOEXBC", "MCXSM"
@@ -10,27 +10,27 @@ line.plt.marketcap.rus <- function(data=T, s=NULL, e=NULL){
     "MOEX", "Major 10", "Blue Chips", "Small Caps"
   )
   
-  if (data){ R <- NULL # data off
+  R <- NULL # data off
     
-    getData2 <- function(A, s, e) { 
-      if (is.null(s) && is.null(e))
-        return(get_candles(A, from = "2007-07-20", interval = 'daily')) 
-      if (is.null(e)) return(get_candles(A, from = s, interval = 'daily')) 
-      if (is.null(s)) return(get_candles(A, till = e, interval = 'daily')) 
-      return(get_candles(A, from = s, till = e, interval = 'daily')) 
-    }
-    for (A in x){ D <- as.data.frame(getData2(A, s, e)[,c(3,8)])
+  getData2 <- function(A, s, e) { 
+    if (is.null(s) && is.null(e))
+      return(get_candles(A, from = "2007-07-20", interval = 'daily')) 
+    if (is.null(e)) return(get_candles(A, from = s, interval = 'daily')) 
+    if (is.null(s)) return(get_candles(A, till = e, interval = 'daily')) 
+    return(get_candles(A, from = s, till = e, interval = 'daily')) 
+  }
+  for (A in x){ D <- as.data.frame(getData2(A, s, e)[,c(3,8)])
     
-      message(
-        sprintf(
-          "%s is downloaded (%s / %s)", 
-          A, which(x == A), length(x)
-        )
-      ) # Download message
+    message(
+      sprintf(
+        "%s is downloaded (%s / %s)", 
+        A, which(x == A), length(x)
+      )
+    ) # Download message
       
-      D <- D[!duplicated(D),] # Remove duplicates
+    D <- D[!duplicated(D),] # Remove duplicates
       
-      R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } }
+    R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } 
       
   R <- R[apply(R, 1, function(x) all(!is.na(x))),] # Get rid of NA
   
@@ -76,4 +76,4 @@ line.plt.marketcap.rus <- function(data=T, s=NULL, e=NULL){
     
   on.exit(par(par(no.readonly = T))) # Show legend with names
 }
-line.plt.marketcap.rus(T)
+line.plt.marketcap.rus()
