@@ -1,6 +1,7 @@
 lapply(c("moexer", "timeSeries", "xts"), require, character.only = T) # Libs
 
-sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2){
+sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2,
+                                   method="pearson"){
   
   x <- c(
     "MOEXTL", "MOEXCN", "MOEXOG", "MOEXFN", "MOEXTN", "MOEXIT", "MOEXCH",
@@ -44,7 +45,7 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2){
   
   c.correlation = ncol(m.correlation) # Get number of columns
   
-  new_cor <- cor(m.correlation) # Calculate correlation coefficients
+  new_cor <- cor(m.correlation, method=method) # Correlation coefficients
   
   # Create appropriate colour for each pair of correlation for heatmap
   k.c <- round((10 * length(unique(as.vector(new_cor))))/2)
@@ -75,4 +76,4 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2){
   
   par(mar = rep(10, 4)) # Define borders of the plot
 }
-sector.correlation.rus(T)
+sector.correlation.rus()
