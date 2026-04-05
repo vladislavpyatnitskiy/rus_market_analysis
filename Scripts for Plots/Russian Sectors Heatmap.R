@@ -1,7 +1,8 @@
 lapply(c("moexer", "timeSeries", "xts"), require, character.only = T) # Libs
 
-sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2,
-                                   method="pearson"){
+sector.correlation.rus <- function(
+    data=T, s=NULL, e=NULL, lg=T, size=2, method="pearson"
+    ){
   
   x <- c(
     "MOEXTL", "MOEXCN", "MOEXOG", "MOEXFN", "MOEXTN", "MOEXIT", "MOEXCH",
@@ -14,31 +15,31 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2,
   )
   
   if (data){ R <- NULL # data off
-    
-    getData2 <- function(A, s, e) { 
-      if (is.null(s) && is.null(e))
-        return(get_candles(A, from = "2007-07-20", interval = 'daily')) 
-      if (is.null(e)) return(get_candles(A, from = s, interval = 'daily')) 
-      if (is.null(s)) return(get_candles(A, till = e, interval = 'daily')) 
-      return(get_candles(A, from = s, till = e, interval = 'daily')) 
-    }
-    for (A in x){ D <- as.data.frame(getData2(A, s, e)[,c(3,8)])
-                 
-      message(
-        sprintf(
-          "%s is downloaded (%s / %s)", 
-          A, which(x == A), length(x)
-        )
-      ) # Download message
-      
-      D <- D[!duplicated(D),] # Remove duplicates
-      
-      R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } }
-    
+  
+  getData2 <- function(A, s, e) { 
+    if (is.null(s) && is.null(e))
+      return(get_candles(A, from = "2007-07-20", interval = 'daily')) 
+    if (is.null(e)) return(get_candles(A, from = s, interval = 'daily')) 
+    if (is.null(s)) return(get_candles(A, till = e, interval = 'daily')) 
+    return(get_candles(A, from = s, till = e, interval = 'daily')) 
+  }
+  for (A in x){ D <- as.data.frame(getData2(A, s, e)[,c(3,8)])
+  
+  message(
+    sprintf(
+      "%s is downloaded (%s / %s)", 
+      A, which(x == A), length(x)
+    )
+  ) # Download message
+  
+  D <- D[!duplicated(D),] # Remove duplicates
+  
+  R <- cbind(R, xts(D[, 1], order.by = as.Date(D[, 2]))) } }
+  
   R <- R[apply(R, 1, function(x) all(!is.na(x))),] # Get rid of NA
   
   colnames(R) <- y
-    
+  
   if (lg | data) { R <- diff(log(as.timeSeries(R)))[-1,] }
   
   m.correlation = as.matrix(R) # Convert data into matrix
@@ -46,6 +47,8 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2,
   c.correlation = ncol(m.correlation) # Get number of columns
   
   new_cor <- cor(m.correlation, method=method) # Correlation coefficients
+  
+  par(mar = rep(10, 4)) # Define borders of the plot
   
   # Create appropriate colour for each pair of correlation for heatmap
   k.c <- round((10 * length(unique(as.vector(new_cor))))/2)
@@ -59,7 +62,12 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2,
   axis(2, at = c.correlation:1, labels = colnames(m.correlation), las = 2)
   axis(1, at = 1:c.correlation, labels = colnames(m.correlation), las = 2)
   
-  title(main = "Heatmap of Russian Sector Correlations") # title
+  title(
+    main = sprintf(
+      "Heatmap of Russian Sector Correlations using %s method",
+      method
+      )
+    ) # title
   
   box() # Box heatmap
   
@@ -73,7 +81,5 @@ sector.correlation.rus <- function(data=T, s=NULL, e=NULL, lg=T, size=2,
     text(corr.coord[i, 1], corr.coord[c.correlation ^ 2 + 1 - i, 2],
          round(X.corr[corr.coord[i,1],corr.coord[i,2]],digits=2),col = "white",
          cex=size) }
-  
-  par(mar = rep(10, 4)) # Define borders of the plot
 }
 sector.correlation.rus()
